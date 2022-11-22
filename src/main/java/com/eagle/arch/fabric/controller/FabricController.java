@@ -16,8 +16,8 @@ public class FabricController {
     private final QueryService queryService;
 
     @GetMapping(value = "/query", produces = MediaType.APPLICATION_JSON_VALUE)
-    public FabricEventAck query(@RequestParam String inputQuery) {
-        return queryService.executeQuery(inputQuery);
+    public FabricEventAck query(@RequestParam String inputQuery, @RequestParam boolean persistTime) {
+        return queryService.executeQuery(inputQuery, persistTime);
     }
 
     @GetMapping(value = "/query/result", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -26,7 +26,7 @@ public class FabricController {
     }
 
     @GetMapping(value = "/query/result/{queryId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public FabricEventResponse getQueryList(@PathVariable @NonNull String queryId) {
-        return queryService.getQueryStatus(queryId);
+    public FabricEventResponse getQueryList(@PathVariable @NonNull String queryId, @RequestParam boolean persistTime) {
+        return queryService.getQueryStatus(queryId, persistTime);
     }
 }

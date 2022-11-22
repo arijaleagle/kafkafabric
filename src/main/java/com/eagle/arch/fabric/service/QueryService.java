@@ -5,9 +5,9 @@ import com.eagle.arch.fabric.controller.FabricEventListResponse;
 import com.eagle.arch.fabric.controller.FabricEventResponse;
 
 public interface QueryService {
-    FabricEventAck executeQuery(String inputQuery);
+    FabricEventAck executeQuery(String inputQuery, boolean persistTime);
 
     FabricEventListResponse getQueryStatusList();
 
-    FabricEventResponse getQueryStatus(String queryId);
+    FabricEventResponse getQueryStatus(String queryId, boolean persistTime);
 }

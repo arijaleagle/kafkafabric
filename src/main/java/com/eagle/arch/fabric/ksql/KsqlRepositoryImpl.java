@@ -38,7 +38,7 @@ public class KsqlRepositoryImpl implements KsqlRepository {
         // todo check the query injection
         String query = baseQuery + String.format("where id = '%s';", queryId);
         String result = getQueryResult(baseQuery + String.format("where id = '%s';", queryId));
-        log.info("query result for query {} is {}", query, result);
+        //log.info("query result for query {} is {}", query, result);
         List<FabricEventResponse> response = deserialize(result);
         if (response.isEmpty()) {
             return Optional.empty();
