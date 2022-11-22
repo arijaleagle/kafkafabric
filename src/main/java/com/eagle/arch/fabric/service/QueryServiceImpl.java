@@ -45,6 +45,7 @@ public class QueryServiceImpl implements QueryService {
         long diff = end - start;
         log.info("Time to produce message for id {} is {}", uuid, diff);
         if (persistTime) {
+            // todo persist in differnt system, for aggregation/monitoring
             log.info("persistTime {}", persistTime);
         }
         return new FabricEventAck(result.getId(), result.getTimestamp(), result.getInputQuery());
@@ -69,6 +70,7 @@ public class QueryServiceImpl implements QueryService {
         long diff = end - start;
         log.info("Time to check status for id {} is {}", queryId, diff);
         if (persistTime) {
+            // todo persist in differnt system, for aggregation/monitoring
             log.info("persistTime {}", persistTime);
         }
         return response;
