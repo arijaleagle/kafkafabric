@@ -1,5 +1,6 @@
 package com.eagle.arch.fabric.service;
 
+import com.eagle.arch.fabric.broker.RedisCache;
 import com.eagle.arch.fabric.controller.FabricEventAck;
 import com.eagle.arch.fabric.controller.FabricEventListResponse;
 import com.eagle.arch.fabric.controller.FabricEventResponse;
@@ -26,28 +27,31 @@ public class QueryServiceImpl implements QueryService {
 
     private final KsqlRepository ksqlRepository;
 
+    private final RedisCache<FabricEvent> redisCache;
+
     @Value("${dna.fabric.event.topic}")
     private String topic;
 
     @Autowired
-    public QueryServiceImpl(Producer producer, KsqlRepositoryImpl ksqlRepository) {
+    public QueryServiceImpl(Producer producer, KsqlRepositoryImpl ksqlRepository, RedisCache<FabricEvent> redisCache) {
         this.producer = producer;
         this.ksqlRepository = ksqlRepository;
+        this.redisCache = redisCache;
     }
 
     @Override
-    public FabricEventAck executeQuery(String inputQuery, boolean persistTime) {
+    public FabricEventAck executeQuery(String inputQuery, boolean redis) {
         long start = System.currentTimeMillis();
         String uuid = UUID.randomUUID().toString();
         FabricEvent event = new FabricEvent(uuid, inputQuery, LocalDateTime.now(), null, QueryStatus.QUEUED, null);
         FabricEvent result = producer.produce(topic, event);
+        // persist into redis, todo need transaction?
+        if (redis) {
+            redisCache.put(uuid, event);
+        }
         long end = System.currentTimeMillis();
         long diff = end - start;
         log.info("Time to produce message for id {} is {}", uuid, diff);
-        if (persistTime) {
-            // todo persist in differnt system, for aggregation/monitoring
-            log.info("persistTime {}", persistTime);
-        }
         return new FabricEventAck(result.getId(), result.getTimestamp(), result.getInputQuery());
     }
 
@@ -57,22 +61,28 @@ public class QueryServiceImpl implements QueryService {
     }
 
     @Override
-    public FabricEventResponse getQueryStatus(String queryId, boolean persistTime) {
+    public FabricEventResponse getQueryStatus(String queryId, boolean redis) {
         long start = System.currentTimeMillis();
-        Optional<FabricEventResponse> status = ksqlRepository.get(queryId);
-        FabricEventResponse response = null;
-        if (status.isPresent()) {
-            response = status.get();
+        FabricEventResponse response;
+        if (redis) {
+            Optional<FabricEvent> val = redisCache.get(queryId);
+            if (val.isPresent()) {
+                response = val.get().toFabricEventResponse();
+            } else {
+                throw new QueryNotFoundException(String.format("Request with id: %s not found", queryId));
+            }
         } else {
-            throw new QueryNotFoundException(String.format("Request with id: %s not found", queryId));
+            Optional<FabricEventResponse> status = ksqlRepository.get(queryId);
+            if (status.isPresent()) {
+                response = status.get();
+            } else {
+                throw new QueryNotFoundException(String.format("Request with id: %s not found", queryId));
+            }
         }
         long end = System.currentTimeMillis();
         long diff = end - start;
         log.info("Time to check status for id {} is {}", queryId, diff);
-        if (persistTime) {
-            // todo persist in differnt system, for aggregation/monitoring
-            log.info("persistTime {}", persistTime);
-        }
+
         return response;
     }
 }

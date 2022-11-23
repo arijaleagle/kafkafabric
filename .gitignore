@@ -76,3 +76,10 @@ build/classes/java/main/com/eagle/arch/fabric/ksql/listener/KTableCreateListener
 build/classes/java/main/com/eagle/arch/fabric/service/QueryService.class
 build/classes/java/main/com/eagle/arch/fabric/service/QueryServiceImpl.class
 build/resources/main/application.properties
+.gradle/7.5.1/checksums/md5-checksums.bin
+.gradle/7.5.1/checksums/sha1-checksums.bin
+build/classes/java/main/com/eagle/arch/fabric/broker/MessagePublisher.class
+build/classes/java/main/com/eagle/arch/fabric/broker/RedisCache.class
+build/classes/java/main/com/eagle/arch/fabric/broker/RedisCacheImpl.class
+build/classes/java/main/com/eagle/arch/fabric/config/RedisConfig.class
+dump.rdb
