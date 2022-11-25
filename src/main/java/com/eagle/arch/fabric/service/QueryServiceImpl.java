@@ -51,7 +51,11 @@ public class QueryServiceImpl implements QueryService {
         }
         long end = System.currentTimeMillis();
         long diff = end - start;
-        log.info("Time to produce message for id {} is {}", uuid, diff);
+        String logMessage = String.format("Time to produce message for id %s is %s.", uuid, diff);
+        if (redis) {
+            logMessage += " Using redis";
+        }
+        log.info(logMessage);
         return new FabricEventAck(result.getId(), result.getTimestamp(), result.getInputQuery());
     }
 
@@ -81,7 +85,11 @@ public class QueryServiceImpl implements QueryService {
         }
         long end = System.currentTimeMillis();
         long diff = end - start;
-        log.info("Time to check status for id {} is {}", queryId, diff);
+        String logMessage = String.format("Time to check status for id %s is %s.", queryId, diff);
+        if (redis) {
+            logMessage += " Using redis";
+        }
+        log.info(logMessage);
 
         return response;
     }
