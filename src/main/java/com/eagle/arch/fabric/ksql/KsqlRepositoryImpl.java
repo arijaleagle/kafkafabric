@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -19,6 +20,7 @@ import java.util.Optional;
 @Component
 @AllArgsConstructor
 @Slf4j
+@Qualifier("ksqlRest")
 public class KsqlRepositoryImpl implements KsqlRepository {
 
     private final WebClient webClient;

@@ -13,7 +13,7 @@ public class KsqlDbConfig {
     private String ksqlDbHost;
 
     @Value("${ksqldb.port}")
-    private Integer ksqlDbPort;
+    private int ksqlDbPort;
 
     @Value("${ksqldb.username}")
     private String userName;
@@ -25,9 +25,11 @@ public class KsqlDbConfig {
     @Bean
     public Client ksqlDbClient() {
         ClientOptions options = ClientOptions.create()
+                .setBasicAuthCredentials(userName, password)
                 .setHost(ksqlDbHost)
                 .setPort(ksqlDbPort)
-                .setBasicAuthCredentials(userName, password);
+                .setUseTls(true)
+                .setUseAlpn(true);
         return Client.create(options);
     }
 }

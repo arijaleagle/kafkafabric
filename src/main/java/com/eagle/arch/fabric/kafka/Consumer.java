@@ -27,7 +27,7 @@ public class Consumer {
     }
 
     @KafkaListener(topics = {"${dna.fabric.event.topic}"}, groupId = "${kafka.group.id}")
-    public void consume(ConsumerRecord<String, FabricEvent> consumerRecord) throws ExecutionException, InterruptedException {
+    public void consume(ConsumerRecord<String, FabricEvent> consumerRecord) {
         FabricEvent fabricEvent = consumerRecord.value();
 //        log.info("received = " + consumerRecord.value() + " with key " + consumerRecord.key());
         if (fabricEvent.getStatus() != QueryStatus.QUEUED) {

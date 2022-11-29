@@ -9,9 +9,9 @@ import com.eagle.arch.fabric.event.QueryStatus;
 import com.eagle.arch.fabric.exceptions.QueryNotFoundException;
 import com.eagle.arch.fabric.kafka.Producer;
 import com.eagle.arch.fabric.ksql.KsqlRepository;
-import com.eagle.arch.fabric.ksql.KsqlRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +33,7 @@ public class QueryServiceImpl implements QueryService {
     private String topic;
 
     @Autowired
-    public QueryServiceImpl(Producer producer, KsqlRepositoryImpl ksqlRepository, RedisCache<FabricEvent> redisCache) {
+    public QueryServiceImpl(Producer producer, @Qualifier("ksqlClient") KsqlRepository ksqlRepository, RedisCache<FabricEvent> redisCache) {
         this.producer = producer;
         this.ksqlRepository = ksqlRepository;
         this.redisCache = redisCache;

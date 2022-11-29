@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @ToString
-public class FabricEventAck implements Serializable {
+public class FabricEventAck {
     private String id;
     private LocalDateTime timestamp;
     private String inputQuery;
